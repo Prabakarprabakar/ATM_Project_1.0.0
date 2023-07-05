@@ -60,7 +60,7 @@ public class Util {
                 System.out.print(Admin.cash[i] + " X ");
                 flag = true;
                 if (scanner.hasNextInt()) {
-                    value[i] = getIntInput();
+                    value[i] += getIntInput();
                     if (value[i] >= 0)
                         flag = false;
                     else {
@@ -76,6 +76,17 @@ public class Util {
                     scanner.nextLine();
                 }
             } while (flag);
+            if(i==2){
+                if(language==Constant.TAMIL_LANGUAGE)System.out.println("1.பணத்தை சேர்க்கவும்\n2.தொடர்க \n3.ரத்து செய்");
+                else System.out.println("1.Add Cash \n2.Continue\n3.Cancel");
+                byte choice=getByteInput();
+                if(choice==1){
+                    i=-1;
+                }else if(choice==3){
+                    value[0]=value[1]=value[2]=0;
+                    break;
+                }
+            }
         }
         double amount = 0;
         for (byte i = 0; i < 3; i++) {

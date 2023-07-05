@@ -1,5 +1,7 @@
 package atm;
 
+import javax.xml.crypto.Data;
+
 public class Main {
     private final static byte FAST_CASH = 1;
     private final static byte WITH_DRAW = 2;
@@ -15,7 +17,8 @@ public class Main {
 
     public static void main(String[] args) {
         Bank bank = new Bank();
-        FileClass file = new FileClass();
+//        FileClass file = new FileClass();
+        DataBase dataBase=new DataBase();
         do {
             System.out.println("\n\t\t\t\t\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
             System.out.println("\t\t\t\t\t$    Welcome to ZoHo ATM    $");
@@ -46,7 +49,8 @@ public class Main {
                     }
                 } while (cardNoFlag);
                 short pinNo = Util.getInstance().getShortInput(language);
-                file.readBankDetailsFromCSV(cardNo);
+//                file.readBankDetailsFromCSV(cardNo);
+                dataBase.readBankDataFromSQLUsingCardNumber(cardNo);
                 Card card = bank.getCard(cardNo);
                 if (card!=null && card.getPinNumber() == pinNo && Atm.getInstance().dateValidate(card.getValidTHRU())) {
                     BankAccount bankAccount = bank.getBankAccount(card);

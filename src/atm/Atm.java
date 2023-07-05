@@ -33,8 +33,10 @@ public class Atm {
         if (phoneNo == bankAccount.getPhoneNumber()) {
             if (bankAccount.card.setPinNo(newPin)) {
                 //Rewrite in file
-                FileClass file=new FileClass();
-                file.changePin(newPin, bankAccount);
+//                FileClass file=new FileClass();
+//                file.changePin(newPin, bankAccount);
+                DataBase dataBase=new DataBase();
+                dataBase.changePinFromSQL(newPin, bankAccount);
                 if (language == Constant.TAMIL_LANGUAGE) System.out.print("வெற்றிகரமாக குறியீட்டு எண் மாற்றப்பட்டது\n");
                 else System.out.println("Pin changed Successfully\n");
             } else {
@@ -143,7 +145,7 @@ public class Atm {
                 }
                 default -> {
                     if (language == Constant.TAMIL_LANGUAGE)
-                        System.out.println("\u001B[31m சரியான தேர்வை உள்ளிடவும்...");
+                        System.out.println("\u001B[31m சரியான தேர்வை உள்ளிடவும்...\u001B[0m");
                     else
                         System.out.println("\u001B[31m Enter the Valid Choice... \u001B[0m");
                 }
@@ -157,8 +159,10 @@ public class Atm {
             if (admin.checkAvailableCashOnAtm(amount)) {
                 bankAccount.setBalanceAmount((bankAccount.getBalanceAmount() - amount));
                 // Rewrite the Balance Amount
-                FileClass file=new FileClass();
-                file.withdrawAmount(amount,bankAccount);
+//                FileClass file=new FileClass();
+//                file.withdrawAmount(amount,bankAccount);
+                DataBase dataBase=new DataBase();
+                dataBase.withDrawAmountFromSQL(amount,bankAccount);
                 try {
                     addStatement(bankAccount, "Fast Cash", amount, simpleDateFormat.format(date));
                 } catch (IOException e) {
@@ -218,18 +222,22 @@ public class Atm {
                 if (language == Constant.TAMIL_LANGUAGE)
                     System.out.println("\u001B[31m தயவுசெய்து ரூபாய் 35000க்கு கீழே உள்ள தொகையை செலுத்தவும் \u001B[0m");
                 else System.out.println("\u001B[31m Please Deposit Amount Below RS.35000 \u001B[0m");
-            } else {
+            } else if(amount!=0){
                 admin.setCashToATM(value);
                 bankAccount.setBalanceAmount((bankAccount.getBalanceAmount() + amount));
                 // Rewrite the Balance in file
-                FileClass file=new FileClass();
-                file.depositAmount(amount,bankAccount);
+//                FileClass file=new FileClass();
+//                file.depositAmount(amount,bankAccount);
+                DataBase dataBase=new DataBase();
+                dataBase.depositAmountInSQL(amount,bankAccount);
                 try {
                     addStatement(bankAccount, "Deposit  ", amount, simpleDateFormat.format(date));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 cashDepositReceipt(value, amount);
+            }else{
+                System.out.println("No Transection done....");
             }
         } else {
             System.out.println("Something went wrong!");
@@ -257,8 +265,10 @@ public class Atm {
                 if (admin.checkAvailableCashOnAtm(amount)) {
                     bankAccount.setBalanceAmount(bankAccount.getBalanceAmount() - amount);
                     // Rewrite the Balance Amount
-                    FileClass file=new FileClass();
-                    file.withdrawAmount(amount,bankAccount);
+//                    FileClass file=new FileClass();
+//                    file.withdrawAmount(amount,bankAccount);
+                    DataBase dataBase=new DataBase();
+                    dataBase.withDrawAmountFromSQL(amount,bankAccount);
                     try {
                         addStatement(bankAccount, "Withdraw ", amount, simpleDateFormat.format(date));
                     } catch (IOException e) {
@@ -300,8 +310,10 @@ public class Atm {
             }
         } while (!flag);
         Bank bank = new Bank();
-        FileClass file=new FileClass();
-        file.readBankDetails(accountNo);
+//        FileClass file=new FileClass();
+//        file.readBankDetails(accountNo);
+        DataBase dataBase=new DataBase();
+        dataBase.readBankDataFromSQLUsingBankAccountNumber(accountNo);
         BankAccount bankUser = bank.getBankAccount(accountNo);
         if (bankUser != null) {
             System.out.println("---------------------------------------");
@@ -326,11 +338,12 @@ public class Atm {
                             if (language == Constant.TAMIL_LANGUAGE)
                                 System.out.println("\u001B[31m தயவுசெய்து ரூபாய் 35000க்கு கீழே உள்ள தொகையை செலுத்தவும் \u001B[0m");
                             else System.out.println("\u001B[31m Please Deposit Amount Below RS.35000 \u001B[0m");
-                        } else {
+                        } else if(amount!=0){
                             admin.setCashToATM(value);
                             bankUser.setBalanceAmount((bankUser.getBalanceAmount() + amount));
                             // Rewrite file Balance Amount
-                            file.depositAmount(amount,bankUser);
+//                            file.depositAmount(amount,bankUser);
+                            dataBase.depositAmountInSQL(amount,bankUser);
                             if (language == Constant.TAMIL_LANGUAGE) System.out.println("வெற்றிகரமாக தொகை செலுத்தப்பட்டது...");
                             else System.out.println("Cash Deposited successfully...");
                             try {
@@ -339,6 +352,8 @@ public class Atm {
                                 throw new RuntimeException(e);
                             }
                             cashDepositReceipt(value, amount);
+                        }else{
+                            System.out.println("No Transection done....");
                         }
                     } else {
                         System.out.println("Something went wrong!");

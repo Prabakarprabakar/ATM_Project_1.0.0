@@ -28,7 +28,6 @@ public class Bank {
         if(CARD_DETAILS.containsKey(cardNumber)) {
             return CARD_DETAILS.get(cardNumber);
         }
-        System.out.println("null");
         return null;
     }
 
